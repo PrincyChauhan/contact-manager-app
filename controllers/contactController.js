@@ -15,7 +15,7 @@ const createContact = asyncHandler(async(req, res) => {
     }
     const contact = await Contact.create({ name, email, phone });
     res.status(201).json(contact);
-})
+});
 
 const getContact = asyncHandler(async(req, res) => {
     const contact = await Contact.findById(req.params.id);
@@ -24,7 +24,7 @@ const getContact = asyncHandler(async(req, res) => {
         throw new Error("Contact not found");
     }
     res.status(200).json(contact);
-})
+});
 
 const updateContact = asyncHandler(async(req, res) => {
     const contact = await Contact.findById(req.params.id);
@@ -33,10 +33,10 @@ const updateContact = asyncHandler(async(req, res) => {
         throw new Error("Contact not found");
     }
     const updatedContact = await Contact.findByIdAndUpdate(req.params.id, req.body, {
-        new: true
-    })
+        new: true,
+    });
     res.status(200).json(updatedContact);
-})
+});
 
 const deleteContact = asyncHandler(async(req, res) => {
     const contact = await Contact.findById(req.params.id);
@@ -44,8 +44,8 @@ const deleteContact = asyncHandler(async(req, res) => {
         res.status(404);
         throw new Error("Contact not found");
     }
-    await Contact.remove();
-    res.status(200).json(contact);
-})
+    await contact.remove(); // Corrected this line to properly remove the found contact
+    res.status(200).json({ message: 'Contact removed', contact });
+});
 
-module.exports = { getContacts, createContact, getContact, updateContact, deleteContact }
+module.exports = { getContacts, createContact, getContact, updateContact, deleteContact };
