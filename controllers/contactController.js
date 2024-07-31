@@ -28,6 +28,12 @@ const getContact = asyncHandler(async(req, res) => {
 
 const updateContact = asyncHandler(async(req, res) => {
     const contact = await Contact.findById(req.params.id);
+
+    if (contact.user_id.toString() !== req.user.id) {
+        res.status(403);
+        throw new Error("Not authorized to update this contact");
+    }
+
     if (!contact) {
         res.status(404);
         throw new Error("Contact not found");
@@ -43,6 +49,10 @@ const deleteContact = asyncHandler(async(req, res) => {
     if (!contact) {
         res.status(404);
         throw new Error("Contact not found");
+    }
+    if (contact.user_id.toString() !== req.user.id) {
+        res.status(403);
+        throw new Error("Not authorized to delete this contact");
     }
     await contact.remove(); // Corrected this line to properly remove the found contact
     res.status(200).json({ message: 'Contact removed', contact });
